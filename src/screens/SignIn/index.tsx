@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Image,
   KeyboardAvoidingView,
   Platform,
   View,
   ScrollView,
+  Keyboard,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -23,6 +24,31 @@ import {
 } from './styles';
 
 const SignIn: React.FC = () => {
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+
+  const _keyboardShown = useCallback(() => setKeyboardOpen(true), []);
+  const _keyboardHidden = useCallback(() => setKeyboardOpen(false), []);
+
+  useEffect(() => {
+    if (Platform.OS !== 'ios') {
+      Keyboard.addListener('keyboardDidShow', _keyboardShown);
+    }
+
+    return () => {
+      Keyboard.removeListener('keyboardDidShow', _keyboardShown);
+    };
+  }, [_keyboardShown]);
+
+  useEffect(() => {
+    if (Platform.OS !== 'ios') {
+      Keyboard.addListener('keyboardDidHide', _keyboardHidden);
+    }
+
+    return () => {
+      Keyboard.removeListener('keyboardDidHide', _keyboardHidden);
+    };
+  }, [_keyboardHidden]);
+
   return (
     <>
       <KeyboardAvoidingView
@@ -60,10 +86,12 @@ const SignIn: React.FC = () => {
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <CreateAccountButton onPress={() => {}}>
-        <Icon name="log-in" size={20} color="#ff9000" />
-        <CreateAccountButtonText>Criar uma conta</CreateAccountButtonText>
-      </CreateAccountButton>
+      {(Platform.OS === 'ios' || !keyboardOpen) && (
+        <CreateAccountButton onPress={() => {}}>
+          <Icon name="log-in" size={20} color="#ff9000" />
+          <CreateAccountButtonText>Criar uma conta</CreateAccountButtonText>
+        </CreateAccountButton>
+      )}
     </>
   );
 };
