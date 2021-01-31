@@ -32,6 +32,8 @@
     "react-hooks/rules-of-hooks": "error",
     "prettier/prettier": "error",
     "react/prop-types": "off",
+    "camelcase": "off",
+    "react/jsx-one-expression-per-line": "off",
     "@typescript-eslint/ban-types": "off",
     "no-underscore-dangle": "off",
     "react/jsx-props-no-spreading": "off",
